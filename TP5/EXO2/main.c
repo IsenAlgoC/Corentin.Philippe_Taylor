@@ -63,7 +63,13 @@ int SetElement(TABLEAU* tab, int pos, int Element) {
 
 /* Fonction qui affiche une partie du tableau en fonction d une position de debut et de fin */
 int DisplayElements(TABLEAU* tab, int StartPos, int EndPos) {
-	if ((StartPos >= 0) && (EndPos < tab->size) && (EndPos >= StartPos)) {   // on vérifie la validité des paramètres en entrée
+	int change = 0;
+	if (StartPos > EndPos){  
+		change = StartPos;
+		StartPos = EndPos;
+		EndPos = change; 
+		}
+	if ((StartPos >= 0) && (EndPos < tab->size)) {   // on vérifie la validité des paramètres en entrée
 		for (int i = StartPos; i <= EndPos; i++) {                           // on affiche les elements du tableau entre StartPos et EndPos
 			printf("%d ", *(tab->elt + i));
 		}
@@ -76,6 +82,12 @@ int DisplayElements(TABLEAU* tab, int StartPos, int EndPos) {
 /* Fonction qui suprime un element et met a jour la taille du tableau */
 int DeleteElements(TABLEAU* tab, int StartPos, int EndPos) {
 	int j = 0; 																		// initialisation de l'indice de la liste raccourcie
+	int change = 0;
+	if (StartPos > EndPos){  
+		change = StartPos;
+		StartPos = EndPos;
+		EndPos = change; 
+		}
 	int* tab2 = (int*)malloc((tab->size - (EndPos - StartPos) - 1) * sizeof(int));  // on réalloue la memoire necessaire au traitement
 	if (tab2 == NULL) { return(-1); }
 	for (int i = 0; i <= tab->size - 1; i++) {
@@ -100,8 +112,11 @@ int main() {
 	SetElement(&tableau, 11, 20);        			   // on remplace un élément de la liste
 	SetElement(&tableau, 29, 20);                      // on rajoute un élément en dehors de la liste
 	DisplayElements(&tableau, 0, tableau.size - 1);    // on affiche le tableau pour vérifier que la fonction SetElements fonctionne bien
+	DisplayElements(&tableau, 7, 3);				   // on vérifie que l'affichage ne pose pas de problème avec une position de départ supérieur à celle de fin
 	DeleteElements(&tableau, 10, 25);	               // on supprime une partie du tableau
 	DisplayElements(&tableau, 0, tableau.size - 1);    // n affiche le tableau pour vérifier que la fonction DeleteElements fonctionne bien
+	DeleteElements(&tableau, 9, 3);					   // on supprime une partie du tableau avec une position de départ supérieur à celle de fin
+	DisplayElements(&tableau, 0, tableau.size - 1);    // on vérifie que la suppresion ne pose pas de problème avec une position de départ supérieur à celle de fin
 	printf("%d\n", tableau.size);                      // taille avant réalloc
 	int a = IncrementArraySize(&tableau, 10);		   // on augmente le nombre d'octets de notre tableau
 	printf("%d\n", a);                                 // taille après réalloc correcte
